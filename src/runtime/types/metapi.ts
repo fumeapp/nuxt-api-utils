@@ -1,5 +1,3 @@
-import type { ZodIssue } from 'zod'
-
 export interface MetapiResponse<T = unknown> {
   meta: {
     benchmark: string
@@ -9,4 +7,4 @@ export interface MetapiResponse<T = unknown> {
   data: T
 }
 
-export type MetapiDetail = string | ZodIssue[]
+export type MetapiDetail = string | import('zod').ZodIssue[]
