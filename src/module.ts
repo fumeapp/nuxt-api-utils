@@ -10,18 +10,9 @@ export default defineNuxtModule<ModuleOptions>({
     name: 'api-utils',
     configKey: 'apiUtils',
   },
-  // Default configuration options of the Nuxt module
   defaults: {},
-  setup(_options, nuxt) {
+  setup(_options, _nuxt) {
     const resolver = createResolver(import.meta.url)
-
-    nuxt.options.alias['#api-utils'] = resolver.resolve(
-      './runtime/types/index',
-    )
-
     addServerImportsDir(resolver.resolve('./runtime/server/utils'))
-
-    // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
-    // addPlugin(resolver.resolve('./runtime/plugin'))
   },
 })
