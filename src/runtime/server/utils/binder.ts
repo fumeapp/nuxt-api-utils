@@ -1,4 +1,5 @@
 import type { H3Event, Router } from 'h3'
+import { defineEventHandler } from 'h3'
 import type { BinderConfig } from '#api-utils'
 
 export function modelBinder(config: BinderConfig, router: Router) {
