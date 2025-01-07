@@ -1,9 +1,5 @@
 import type { H3Event, Router } from 'h3'
-
-export interface BinderConfig {
-  prismaFactory: (event: H3Event) => unknown
-  models: Record<string, unknown>
-}
+import type { BinderConfig } from '#api-utils'
 
 export function modelBinder(config: BinderConfig, router: Router) {
   async function lookupModels<T extends Record<string, unknown>>(modelNames: (keyof T)[], event: H3Event): Promise<T> {

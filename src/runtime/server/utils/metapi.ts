@@ -1,13 +1,4 @@
-type MetapiDetail = string | import('zod').ZodIssue[]
-
-interface MetapiResponse<T = unknown> {
-  meta: {
-    benchmark: string
-    success: boolean
-    detail?: MetapiDetail
-  }
-  data: T
-}
+import type { MetapiResponse, MetapiDetail } from '#api-utils'
 
 let start: number | undefined
 
