@@ -51,7 +51,7 @@ function renderNullError(event: H3Event, data: unknown): MetapiResponse {
   return render(data)
 }
 
-export default function metapi() {
+export function metapi() {
   start = performance.now()
   return {
     render,
