@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addServerImportsDir } from '@nuxt/kit'
 
 // Module options TypeScript interface definition
 export interface ModuleOptions {
@@ -18,6 +18,8 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.alias['#auth-utils'] = resolver.resolve(
       './runtime/types/index',
     )
+
+    addServerImportsDir(resolver.resolve('./runtime/server/utils'))
 
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
     // addPlugin(resolver.resolve('./runtime/plugin'))
