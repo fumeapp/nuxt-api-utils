@@ -1,20 +1,11 @@
-<!--
-Get your module up and running quickly.
-
-Find and replace all on all files (CMD+SHIFT+F):
-- Name: My Module
-- Package name: nuxt-api-utils
-- Description: My new Nuxt module
--->
-
-# My Module
+# Nuxt API Utils
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
-My new Nuxt module for doing amazing things.
+Introduce model binding and other utils in your nuxt api
 
 - [✨ &nbsp;Release Notes](/CHANGELOG.md)
 <!-- - [🏀 Online playground](https://stackblitz.com/github/fumeapp/nuxt-api-utils?file=playground%2Fapp.vue) -->
@@ -35,7 +26,7 @@ Install the module to your Nuxt application with one command:
 npx nuxi module add nuxt-api-utils
 ```
 
-That's it! You can now use My Module in your Nuxt app ✨
+That's it! You can now use Nuxt Api Utils in your Nuxt app ✨
 
 
 ## Contribution
