@@ -1,4 +1,6 @@
-export interface MetapiResponse<T = unknown> {
+type MetapiDetail = string | import('zod').ZodIssue[]
+
+interface MetapiResponse<T = unknown> {
   meta: {
     benchmark: string
     success: boolean
@@ -6,8 +8,6 @@ export interface MetapiResponse<T = unknown> {
   }
   data: T
 }
-
-export type MetapiDetail = string | import('zod').ZodIssue[]
 
 let start: number | undefined
 
