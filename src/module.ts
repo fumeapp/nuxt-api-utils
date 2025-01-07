@@ -1,7 +1,9 @@
 import { defineNuxtModule, createResolver } from '@nuxt/kit'
 
 // Module options TypeScript interface definition
-export interface ModuleOptions {}
+export interface ModuleOptions {
+  foo?: string
+}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {

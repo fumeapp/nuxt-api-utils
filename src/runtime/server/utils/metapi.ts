@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import type { MetapiDetail, MetapiResponse } from '~/types/metapi'
+import type { MetapiDetail, MetapiResponse } from '#api-utils'
 
 let start: number | undefined
 
@@ -8,7 +8,7 @@ const bench = (): string => {
   return start ? `${(end - start).toFixed(3)}ms` : 'n/a'
 }
 
-const render = (data: any): MetapiResponse => {
+const render = (data: unknown): MetapiResponse => {
   return {
     meta: {
       benchmark: bench(),
@@ -18,7 +18,7 @@ const render = (data: any): MetapiResponse => {
   }
 }
 
-const success = (message: string, data?: any): MetapiResponse => {
+const success = (message: string, data?: unknown): MetapiResponse => {
   return {
     meta: {
       benchmark: bench(),
@@ -43,7 +43,7 @@ const error = (event: H3Event, detail: MetapiDetail, code: number = 400): Metapi
 
 const notFound = (event: H3Event): MetapiResponse => error(event, 'Not Found', 404)
 
-const renderNullError = (event: H3Event, data: any): MetapiResponse => {
+const renderNullError = (event: H3Event, data: unknown): MetapiResponse => {
   if (data === null) return error(event, 'Not Found', 404)
   return render(data)
 }

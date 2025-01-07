@@ -42,9 +42,9 @@ export function modelBinder(config: BinderConfig, router: Router) {
     return { url: urlParts.join('/'), modelNames }
   }
 
-  function modelBoundHandler<T extends Record<string, any>>(
+  function modelBoundHandler<T extends Record<string, unknown>>(
     modelNames: (keyof T)[],
-    handler: (models: T, event: H3Event) => Promise<any>,
+    handler: (models: T, event: H3Event) => Promise<unknown>,
   ) {
     return defineEventHandler(async (event: H3Event) => {
       const boundModels = await lookupModels<T>(modelNames, event)
@@ -57,15 +57,15 @@ export function modelBinder(config: BinderConfig, router: Router) {
     return segments[segments.length - 1].replace(/[{}]/g, '')
   }
 
-  function apiResource<T extends Record<string, any>>(
+  function apiResource<T extends Record<string, unknown>>(
     router: Router,
     route: string,
     handlers: {
-      index?: (models: T, event: H3Event) => Promise<any>
-      create?: (models: T, event: H3Event) => Promise<any>
-      get?: (models: T, event: H3Event) => Promise<any>
-      update?: (models: T, event: H3Event) => Promise<any>
-      remove?: (models: T, event: H3Event) => Promise<any>
+      index?: (models: T, event: H3Event) => Promise<unknown>
+      create?: (models: T, event: H3Event) => Promise<unknown>
+      get?: (models: T, event: H3Event) => Promise<unknown>
+      update?: (models: T, event: H3Event) => Promise<unknown>
+      remove?: (models: T, event: H3Event) => Promise<unknown>
     },
   ) {
     const modelName = getLastUrlSegment(route)
@@ -97,32 +97,32 @@ export function modelBinder(config: BinderConfig, router: Router) {
 
   return {
     ...router,
-    getBound: <T extends Record<string, any>>(url: string, handler: (models: T, event: H3Event) => Promise<any>) => {
+    getBound: <T extends Record<string, unknown>>(url: string, handler: (models: T, event: H3Event) => Promise<unknown>) => {
       const { url: boundUrl, modelNames } = bindModel(url)
       return router.get(boundUrl, modelBoundHandler<T>(modelNames as (keyof T)[], handler))
     },
-    postBound: <T extends Record<string, any>>(url: string, handler: (models: T, event: H3Event) => Promise<any>) => {
+    postBound: <T extends Record<string, unknown>>(url: string, handler: (models: T, event: H3Event) => Promise<unknown>) => {
       const { url: boundUrl, modelNames } = bindModel(url)
       return router.post(boundUrl, modelBoundHandler<T>(modelNames as (keyof T)[], handler))
     },
-    putBound: <T extends Record<string, any>>(url: string, handler: (models: T, event: H3Event) => Promise<any>) => {
+    putBound: <T extends Record<string, unknown>>(url: string, handler: (models: T, event: H3Event) => Promise<unknown>) => {
       const { url: boundUrl, modelNames } = bindModel(url)
       return router.put(boundUrl, modelBoundHandler<T>(modelNames as (keyof T)[], handler))
     },
-    patchBound: <T extends Record<string, any>>(url: string, handler: (models: T, event: H3Event) => Promise<any>) => {
+    patchBound: <T extends Record<string, unknown>>(url: string, handler: (models: T, event: H3Event) => Promise<unknown>) => {
       const { url: boundUrl, modelNames } = bindModel(url)
       return router.patch(boundUrl, modelBoundHandler<T>(modelNames as (keyof T)[], handler))
     },
-    deleteBound: <T extends Record<string, any>>(url: string, handler: (models: T, event: H3Event) => Promise<any>) => {
+    deleteBound: <T extends Record<string, unknown>>(url: string, handler: (models: T, event: H3Event) => Promise<unknown>) => {
       const { url: boundUrl, modelNames } = bindModel(url)
       return router.delete(boundUrl, modelBoundHandler<T>(modelNames as (keyof T)[], handler))
     },
-    apiResource: <T extends Record<string, any>>(url: string, handlers: {
-      index?: (models: T, event: H3Event) => Promise<any>
-      create?: (models: T, event: H3Event) => Promise<any>
-      get?: (models: T, event: H3Event) => Promise<any>
-      update?: (models: T, event: H3Event) => Promise<any>
-      remove?: (models: T, event: H3Event) => Promise<any>
+    apiResource: <T extends Record<string, unknown>>(url: string, handlers: {
+      index?: (models: T, event: H3Event) => Promise<unknown>
+      create?: (models: T, event: H3Event) => Promise<unknown>
+      get?: (models: T, event: H3Event) => Promise<unknown>
+      update?: (models: T, event: H3Event) => Promise<unknown>
+      remove?: (models: T, event: H3Event) => Promise<unknown>
     }) => {
       return apiResource<T>(router, url, handlers)
     },

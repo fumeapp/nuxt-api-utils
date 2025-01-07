@@ -1,4 +1,4 @@
-export interface MetapiResponse<T = any> {
+export interface MetapiResponse<T = unknown> {
   meta: {
     benchmark: string
     success: boolean
