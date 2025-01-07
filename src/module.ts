@@ -13,7 +13,7 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {},
   setup(_options, nuxt) {
     const resolver = createResolver(import.meta.url)
-    nuxt.options.alias['#api-utils'] = resolver.resolve('./runtime/types/index')
+    nuxt.options.alias['#api-utils'] = resolver.resolve('./runtime/types/index.d.ts')
 
     addServerImportsDir(resolver.resolve('./runtime/server/utils'))
   },
