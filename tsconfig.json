@@ -3,6 +3,7 @@
   "exclude": [
     "dist",
     "node_modules",
+    "src/module/runtime/server",
     "playground",
   ]
 }
