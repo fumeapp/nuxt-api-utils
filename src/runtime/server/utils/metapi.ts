@@ -1,5 +1,3 @@
-import type { H3Event } from 'h3'
-
 export interface MetapiResponse<T = unknown> {
   meta: {
     benchmark: string
@@ -39,7 +37,7 @@ const success = (message: string, data?: unknown): MetapiResponse => {
   }
 }
 
-const error = (event: H3Event, detail: MetapiDetail, code: number = 400): MetapiResponse => {
+const error = (event: unknown, detail: MetapiDetail, code: number = 400): MetapiResponse => {
   setResponseStatus(event, code)
   return {
     meta: {
@@ -51,9 +49,9 @@ const error = (event: H3Event, detail: MetapiDetail, code: number = 400): Metapi
   }
 }
 
-const notFound = (event: H3Event): MetapiResponse => error(event, 'Not Found', 404)
+const notFound = (event: unknown): MetapiResponse => error(event, 'Not Found', 404)
 
-const renderNullError = (event: H3Event, data: unknown): MetapiResponse => {
+const renderNullError = (event: unknown, data: unknown): MetapiResponse => {
   if (data === null) return error(event, 'Not Found', 404)
   return render(data)
 }
