@@ -15,7 +15,7 @@ export default defineNuxtModule<ModuleOptions>({
   setup(_options, nuxt) {
     const resolver = createResolver(import.meta.url)
 
-    nuxt.options.alias['#auth-utils'] = resolver.resolve(
+    nuxt.options.alias['#api-utils'] = resolver.resolve(
       './runtime/types/index',
     )
 
