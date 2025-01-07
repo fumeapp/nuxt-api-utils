@@ -1,6 +1,6 @@
 {
   "name": "nuxt-api-utils",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Add model binding and other api utils to your nuxt server",
   "repository": {
     "type": "git",
