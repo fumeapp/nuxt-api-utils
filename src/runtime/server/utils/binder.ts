@@ -1,29 +1,26 @@
 import type { H3Event, Router } from 'h3'
-import { defineEventHandler, createError } from 'h3'
-import type { BinderConfig } from '#api-utils'
+import { createError, defineEventHandler } from 'h3'
+import type { BinderConfig } from '~/types/nuxt-api-utils'
 
 export function modelBinder(config: BinderConfig, router: Router) {
   async function lookupModels<T extends Record<string, unknown>>(modelNames: (keyof T)[], event: H3Event): Promise<T> {
-    const prisma = config.prismaFactory(event)
+    const db = config.drizzleFactory()
     const result = {} as T
 
     for (const key of modelNames) {
-      const modelDelegate = prisma[key as keyof typeof prisma] as unknown
-      if (!modelDelegate)
+      const table = config.tables[key as keyof typeof config.tables]
+      if (!table)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
       const id = event.context.params?.[`${String(key)}Id`]
       if (!id)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
-      const record = await modelDelegate.findUnique({
-        where: { id: Number.parseInt(id, 10) },
-        include: config.models[key as keyof typeof config.models]?.include || {},
-      })
+      const record = (await db.select().from(table).where(eq(table.id, Number.parseInt(id, 10))).limit(1))[0] || undefined
       if (!record)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
-      result[key] = record
+      result[key] = record as T[typeof key]
     }
 
     return result

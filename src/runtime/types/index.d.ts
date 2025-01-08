@@ -1,9 +1,10 @@
-import type { H3Event } from 'h3'
+import type { DrizzleD1Database } from 'drizzle-orm/d1'
+import type { SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core'
 import type { ZodIssue } from 'zod'
 
-export type BinderConfig = {
-  prismaFactory: (event: H3Event) => unknown
-  models: Record<string, unknown>
+export interface BinderConfig {
+  drizzleFactory: () => DrizzleD1Database<unknown>
+  tables: Record<string, SQLiteTableWithColumns<unknown>>
 }
 
 export type MetapiDetail = string | ZodIssue[]
