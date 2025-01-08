@@ -4,7 +4,7 @@ import type { ZodIssue } from 'zod'
 
 export interface BinderConfig {
   drizzleFactory: () => DrizzleD1Database<unknown>
-  tables: Record<string, SQLiteTableWithColumns<unknown>>
+  tables: Record<string, SQLiteTableWithColumns<TableConfig>>
 }
 
 export type MetapiDetail = string | ZodIssue[]
