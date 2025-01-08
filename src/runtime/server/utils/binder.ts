@@ -17,7 +17,7 @@ export function modelBinder(config: BinderConfig, router: Router) {
       if (!id)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
-      const record = (await db.select().from(table).where(eq(table.id, Number.parseInt(id, 10))).limit(1))[0] || undefined
+      const record = (await db.select().from(table).where(eq(table.id, id)).limit(1))[0] || undefined
       if (!record)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
