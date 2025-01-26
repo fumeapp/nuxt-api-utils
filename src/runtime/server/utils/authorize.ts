@@ -1,3 +1,5 @@
+import { createError } from 'h3'
+
 type PolicyFunction<T extends object> = (args: T) => boolean | Promise<boolean>
 
 export async function authorize<T extends object>(
