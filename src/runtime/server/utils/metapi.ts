@@ -42,8 +42,8 @@ function error(event: H3Event, detail: MetapiDetail, code: number = 400): Metapi
   }
 }
 
-function zodError(event: H3Event, message: string, path: string): MetapiResponse {
-  return error(event, [{ message, path: [path], code: 'custom' }], 400)
+function zodError(event: H3Event, message: string, path: string, input: string): MetapiResponse {
+  return error(event, [{ message, path: [path], code: 'custom', input }], 400)
 }
 
 function notFound(event: H3Event): MetapiResponse {

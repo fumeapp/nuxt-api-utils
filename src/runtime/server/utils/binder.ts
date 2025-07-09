@@ -9,7 +9,7 @@ export function modelBinder(config: BinderConfig, router: Router) {
     const result = {} as T
 
     for (const key of modelNames) {
-      const table = config.tables[key as keyof typeof config.tables]
+      const table = db.session.schema.schema[`${String(key)}s` as keyof typeof db.session.schema.schema]
       if (!table)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
@@ -17,7 +17,7 @@ export function modelBinder(config: BinderConfig, router: Router) {
       if (!id)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
-      const record = (await db.select().from(table).where(eq(table.id, id)).limit(1))[0] || undefined
+      const record = db.query[`${String(key)}s`].findFirst({ where: eq(table.columns.id, id) })
       if (!record)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 

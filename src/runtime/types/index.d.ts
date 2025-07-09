@@ -1,11 +1,8 @@
-import type { DrizzleD1Database } from 'drizzle-orm/d1'
-import type { SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core'
 import type { ZodIssue } from 'zod'
 
-export interface BinderConfig {
-  drizzleFactory: () => DrizzleD1Database<unknown>
-  tables: Record<string, SQLiteTableWithColumns<TableConfig>>
-}
+import type { Database, TableConfig } from 'drizzle-orm'
+
+export interface BinderConfig { drizzleFactory: () => Database<TableConfig> }
 
 export type MetapiDetail = string | ZodIssue[]
 
