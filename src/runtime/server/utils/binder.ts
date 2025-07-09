@@ -1,59 +1,46 @@
 import type { H3Event, Router } from 'h3'
 import { eq } from 'drizzle-orm'
 import { createError, defineEventHandler } from 'h3'
-import type { BinderConfigD1, BinderConfigMysql } from '#api-utils'
+import type { BinderConfig } from '#api-utils'
 
-function bindModel(url: string): { url: string, modelNames: string[] } {
-  const parts = url.split('/')
-  const modelNames: string[] = []
-  const urlParts = parts.map((part) => {
-    if (part.startsWith('{') && part.endsWith('}')) {
-      const modelName = part.slice(1, -1)
-      modelNames.push(modelName)
-      return `:${modelName}Id`
+export function modelBinder(config: BinderConfig, router: Router) {
+  async function lookupModels<T extends Record<string, unknown>>(modelNames: (keyof T)[], event: H3Event): Promise<T> {
+    const db = config.drizzleFactory()
+    const result = {} as T
+
+    for (const key of modelNames) {
+      const table = db.session.schema.schema[`${String(key)}s` as keyof typeof db.session.schema.schema]
+      if (!table)
+        throw createError({ statusCode: 404, statusMessage: 'Not Found' })
+
+      const id = event.context.params?.[`${String(key)}Id`]
+      if (!id)
+        throw createError({ statusCode: 404, statusMessage: 'Not Found' })
+
+      const record = db.query[`${String(key)}s`].findFirst({ where: eq(table.columns.id, id) })
+      if (!record)
+        throw createError({ statusCode: 404, statusMessage: 'Not Found' })
+
+      result[key] = record as T[typeof key]
     }
-    return part
-  })
-  return { url: urlParts.join('/'), modelNames }
-}
 
-function getLastUrlSegment(url: string): string {
-  const segments = url.split('/')
-  return segments[segments.length - 1].replace(/[{}]/g, '')
-}
-
-async function performLookup<T extends Record<string, unknown>>(
-  modelNames: (keyof T)[],
-  event: H3Event,
-  config: { tables: Record<string, any> },
-  queryFn: (table: any, id: string) => Promise<any>,
-): Promise<T> {
-  const result = {} as T
-
-  for (const key of modelNames) {
-    const table = config.tables[key as keyof typeof config.tables]
-    if (!table)
-      throw createError({ statusCode: 404, statusMessage: 'Not Found' })
-
-    const id = event.context.params?.[`${String(key)}Id`]
-    if (!id)
-      throw createError({ statusCode: 404, statusMessage: 'Not Found' })
-
-    const record = await queryFn(table, id)
-    if (!record)
-      throw createError({ statusCode: 404, statusMessage: 'Not Found' })
-
-    result[key] = record as T[typeof key]
+    return result
   }
 
-  return result
-}
+  function bindModel(url: string): { url: string, modelNames: string[] } {
+    const parts = url.split('/')
+    const modelNames: string[] = []
+    const urlParts = parts.map((part) => {
+      if (part.startsWith('{') && part.endsWith('}')) {
+        const modelName = part.slice(1, -1)
+        modelNames.push(modelName)
+        return `:${modelName}Id`
+      }
+      return part
+    })
+    return { url: urlParts.join('/'), modelNames }
+  }
 
-// Generic model binder creator that accepts a lookupModels function
-function createModelBinder(
-  lookupModels: <T extends Record<string, unknown>>(modelNames: (keyof T)[], event: H3Event) => Promise<T>,
-  router: Router,
-) {
   function modelBoundHandler<T extends Record<string, unknown>>(
     modelNames: (keyof T)[],
     handler: (models: T, event: H3Event) => Promise<unknown>,
@@ -62,6 +49,11 @@ function createModelBinder(
       const boundModels = await lookupModels<T>(modelNames, event)
       return handler(boundModels, event)
     })
+  }
+
+  function getLastUrlSegment(url: string): string {
+    const segments = url.split('/')
+    return segments[segments.length - 1].replace(/[{}]/g, '')
   }
 
   function apiResource<T extends Record<string, unknown>>(
@@ -134,30 +126,4 @@ function createModelBinder(
       return apiResource<T>(router, url, handlers)
     },
   }
-}
-
-export function modelBinderD1(config: BinderConfigD1, router: Router) {
-  async function lookupModels<T extends Record<string, unknown>>(modelNames: (keyof T)[], event: H3Event): Promise<T> {
-    const db = config.drizzleFactory()
-
-    return performLookup<T>(modelNames, event, config, async (table, id) => {
-      const records = await db.select().from(table).where(eq(table.id, id)).limit(1)
-      return records[0] || undefined
-    })
-  }
-
-  return createModelBinder(lookupModels, router)
-}
-
-export function modelBinderMysql(config: BinderConfigMysql, router: Router) {
-  async function lookupModels<T extends Record<string, unknown>>(modelNames: (keyof T)[], event: H3Event): Promise<T> {
-    const db = config.drizzleFactory()
-
-    return performLookup<T>(modelNames, event, config, async (table, id) => {
-      const records = await db.select().from(table).where(eq(table.id, id)).limit(1)
-      return records[0] || undefined
-    })
-  }
-
-  return createModelBinder(lookupModels, router)
 }
