@@ -1,6 +1,6 @@
 {
   "name": "nuxt-api-utils",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "Add model binding and other api utils to your nuxt server",
   "repository": {
     "type": "git",
@@ -12,20 +12,13 @@
     ".": {
       "types": "./dist/types.d.mts",
       "import": "./dist/module.mjs"
-    },
-    "./utils": {
-      "import": "./dist/utils.mjs"
     }
   },
   "main": "./dist/module.mjs",
-  "types": "./dist/module.d.ts",
   "typesVersions": {
     "*": {
       ".": [
         "./dist/types.d.mts"
-      ],
-      "utils": [
-        "./dist/utils.d.mts"
       ]
     }
   },
