@@ -3,7 +3,6 @@ import { eq } from 'drizzle-orm'
 import { createError, defineEventHandler } from 'h3'
 import type { BinderConfigD1, BinderConfigMysql } from '#api-utils'
 
-// Shared helper functions
 function bindModel(url: string): { url: string, modelNames: string[] } {
   const parts = url.split('/')
   const modelNames: string[] = []
@@ -23,7 +22,6 @@ function getLastUrlSegment(url: string): string {
   return segments[segments.length - 1].replace(/[{}]/g, '')
 }
 
-// Shared lookup logic
 async function performLookup<T extends Record<string, unknown>>(
   modelNames: (keyof T)[],
   event: H3Event,
@@ -138,7 +136,6 @@ function createModelBinder(
   }
 }
 
-// D1-specific implementation
 export function modelBinderD1(config: BinderConfigD1, router: Router) {
   async function lookupModels<T extends Record<string, unknown>>(modelNames: (keyof T)[], event: H3Event): Promise<T> {
     const db = config.drizzleFactory()
@@ -152,7 +149,6 @@ export function modelBinderD1(config: BinderConfigD1, router: Router) {
   return createModelBinder(lookupModels, router)
 }
 
-// MySQL-specific implementation
 export function modelBinderMysql(config: BinderConfigMysql, router: Router) {
   async function lookupModels<T extends Record<string, unknown>>(modelNames: (keyof T)[], event: H3Event): Promise<T> {
     const db = config.drizzleFactory()
