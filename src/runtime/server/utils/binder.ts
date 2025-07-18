@@ -17,7 +17,7 @@ export function modelBinder(config: BinderConfig, router: Router) {
       if (!id)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
-      const record = db.query[`${String(key)}s`].findFirst({ where: eq(table.columns.id, id) })
+      const record = await db.query[`${String(key)}s`].findFirst({ where: eq(table.columns.id, id) })
       if (!record)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
