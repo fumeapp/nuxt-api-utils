@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v0.0.32
+
+[compare changes](https://github.com/fumeapp/nuxt-api-utils/compare/v0.0.31...v0.0.32)
+
 ## v0.0.31
 
 [compare changes](https://github.com/fumeapp/nuxt-api-utils/compare/v0.0.30...v0.0.31)
