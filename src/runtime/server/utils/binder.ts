@@ -1,5 +1,5 @@
 import type { H3Event, Router } from 'h3'
-import { eq } from 'drizzle-orm'
+import { sql, eq } from 'drizzle-orm'
 import { createError, defineEventHandler } from 'h3'
 import type { BinderConfig } from '#api-utils'
 
@@ -17,7 +17,15 @@ export function modelBinder(config: BinderConfig, router: Router) {
       if (!id)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
-      const record = await db.query[`${String(key)}s`].findFirst({ where: eq(table.columns.id, id) })
+      const record = await db.query[`${String(key)}s`].findFirst({
+        where: table.columns.id.columnType === 'MySqlBinary'
+          ? eq(table.columns.id, sql`UUID_TO_BIN(${id})`)
+          : eq(table.columns.id, id),
+        extras: {
+          id: sql<string>`BIN_TO_UUID(${table.columns.id})`.as('id'),
+        },
+      })
+
       if (!record)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
