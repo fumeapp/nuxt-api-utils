@@ -21,9 +21,11 @@ export function modelBinder(config: BinderConfig, router: Router) {
         where: table.columns.id.columnType === 'MySqlBinary'
           ? eq(table.columns.id, sql`UUID_TO_BIN(${id})`)
           : eq(table.columns.id, id),
-        extras: {
-          id: sql<string>`BIN_TO_UUID(${table.columns.id})`.as('id'),
-        },
+        extras: table.columns.id.columnType === 'MySqlBinary'
+          ? {
+              id: sql<string>`BIN_TO_UUID(${table.columns.id})`.as('id'),
+            }
+          : undefined,
       })
 
       if (!record)
