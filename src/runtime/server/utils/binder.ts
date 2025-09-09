@@ -4,12 +4,60 @@ import { createError, defineEventHandler } from 'h3'
 import type { BinderConfig } from '#api-utils'
 
 export function modelBinder(config: BinderConfig, router: Router) {
+  function findTableName(modelName: string, schema: Record<string, unknown>): string | null {
+    const variations = []
+
+    // Enhanced pluralization rules
+    if (modelName.endsWith('s') || modelName.endsWith('x') || modelName.endsWith('z')
+      || modelName.endsWith('ch') || modelName.endsWith('sh')) {
+      // Sibilants: add "es" (e.g., kiss -> kisses, box -> boxes, church -> churches)
+      variations.push(`${modelName}es`)
+    }
+    else if (modelName.endsWith('y') && modelName.length > 1
+      && !'aeiou'.includes(modelName[modelName.length - 2])) {
+      // Consonant + y: change y to ies (e.g., city -> cities, baby -> babies)
+      variations.push(`${modelName.slice(0, -1)}ies`)
+    }
+    else if (modelName.endsWith('f')) {
+      // f -> ves (e.g., leaf -> leaves, wolf -> wolves)
+      variations.push(`${modelName.slice(0, -1)}ves`)
+    }
+    else if (modelName.endsWith('fe')) {
+      // fe -> ves (e.g., knife -> knives, life -> lives)
+      variations.push(`${modelName.slice(0, -2)}ves`)
+    }
+    else if (modelName.endsWith('o') && modelName.length > 1
+      && !'aeiou'.includes(modelName[modelName.length - 2])) {
+      // Consonant + o: add "es" (e.g., hero -> heroes, potato -> potatoes)
+      variations.push(`${modelName}es`)
+    }
+
+    // Always try standard pluralization as fallback
+    variations.push(`${modelName}s`)
+
+    // Try original name (for words that don't pluralize or are already plural)
+    variations.push(modelName)
+
+    for (const variation of variations) {
+      if (schema[variation]) {
+        return variation
+      }
+    }
+
+    return null
+  }
+
   async function lookupModels<T extends Record<string, unknown>>(modelNames: (keyof T)[], event: H3Event): Promise<T> {
     const db = config.drizzleFactory()
     const result = {} as T
 
+    console.log('modelNames', modelNames)
     for (const key of modelNames) {
-      const table = db.session.schema.schema[`${String(key)}s` as keyof typeof db.session.schema.schema]
+      const tableName = findTableName(String(key), db.session.schema.schema)
+      if (!tableName)
+        throw createError({ statusCode: 404, statusMessage: 'Not Found' })
+
+      const table = db.session.schema.schema[tableName as keyof typeof db.session.schema.schema]
       if (!table)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
@@ -17,7 +65,7 @@ export function modelBinder(config: BinderConfig, router: Router) {
       if (!id)
         throw createError({ statusCode: 404, statusMessage: 'Not Found' })
 
-      const record = await db.query[`${String(key)}s`].findFirst({
+      const record = await db.query[tableName].findFirst({
         where: table.columns.id.columnType === 'MySqlBinary'
           ? eq(table.columns.id, sql`UUID_TO_BIN(${id})`)
           : eq(table.columns.id, id),
