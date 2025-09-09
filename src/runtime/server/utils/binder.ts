@@ -51,7 +51,6 @@ export function modelBinder(config: BinderConfig, router: Router) {
     const db = config.drizzleFactory()
     const result = {} as T
 
-    console.log('modelNames', modelNames)
     for (const key of modelNames) {
       const tableName = findTableName(String(key), db.session.schema.schema)
       if (!tableName)
