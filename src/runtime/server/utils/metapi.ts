@@ -9,11 +9,12 @@ function bench(): string {
   return start ? `${(end - start).toFixed(3)}ms` : 'n/a'
 }
 
-function render(data: unknown): MetapiResponse {
+function render(data: unknown, meta?: Record<string, unknown>): MetapiResponse {
   return {
     meta: {
       benchmark: bench(),
       success: true,
+      ...meta,
     },
     data,
   }
