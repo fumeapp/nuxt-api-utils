@@ -2,7 +2,7 @@ import type { $ZodIssue } from 'zod/v4/core'
 
 import type { Database, TableConfig } from 'drizzle-orm'
 
-export interface BinderConfig { drizzleFactory: () => Database<TableConfig> }
+export interface BinderConfig { db: Database<TableConfig> }
 
 export type MetapiDetail = string | $ZodIssue[]
 

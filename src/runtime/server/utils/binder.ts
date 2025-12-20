@@ -48,7 +48,7 @@ export function modelBinder(config: BinderConfig, router: Router) {
   }
 
   async function lookupModels<T extends Record<string, unknown>>(modelNames: (keyof T)[], event: H3Event): Promise<T> {
-    const db = config.drizzleFactory()
+    const db = config.db
     const result = {} as T
 
     for (const key of modelNames) {
