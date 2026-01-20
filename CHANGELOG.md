@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.37
+
+[compare changes](https://github.com/fumeapp/nuxt-api-utils/compare/v0.0.36...v0.0.37)
+
+### 🏡 Chore
+
+- **release:** V0.0.36 ([c0063e5](https://github.com/fumeapp/nuxt-api-utils/commit/c0063e5))
+
+### ❤️ Contributors
+
+- Kevin Olson ([@acidjazz](https://github.com/acidjazz))
+
 ## v0.0.36
 
 [compare changes](https://github.com/fumeapp/nuxt-api-utils/compare/v0.0.35...v0.0.36)
